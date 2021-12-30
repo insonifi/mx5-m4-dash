@@ -1,29 +1,37 @@
-from render import RenderNum
-import time
+
 from adafruit_is31fl3731.matrix_11x7 import Matrix11x7
 import board
 import busio
-from random import randint, choice
+from light import LightSensor
+from math import log
+from random import randint
+from render import RenderNum
+import time
 
+light = LightSensor(board.A0)
 i2c = busio.I2C(board.SCL, board.SDA)
-display0 = Matrix11x7(i2c)
-display1 = Matrix11x7(i2c, address=0x77)
-rn0 = RenderNum(display0)
-rn1 = RenderNum(display1)
+disp_right = Matrix11x7(i2c)
+disp_left = Matrix11x7(i2c, address=0x77)
+ctrl_right = RenderNum(disp_right)
+ctrl_left = RenderNum(disp_left)
 
-rns = [rn0, rn1]
+ctrls = [ctrl_left, ctrl_right]
 
-for rn in rns:
-    rn.brightness = 0
-    rn.offset(0, 1)
+for ctrl in ctrls:
+    ctrl.brightness = 2
+    ctrl.offset(0, 1)
 
+i = 0
 while True:
-    rn0.render(time.localtime().tm_sec)
-    rn1.render(60 - time.localtime().tm_sec)
+    t = time.monotonic_ns()
+    l = light.get_avg()
+    ctrl_left.render(int(t / 10 ** 8 % 10 ** 3), want_zeros=True)
+    ctrl_right.render(l)
 
-    if rn0.brightness < 4:
-        for rn in rns:
-            rn.chg_brightness(1)
+    i = (i + 1) % 5
 
-    time.sleep(0.1)
+    if i == 0:
+        ctrl_left.set_brightness(l)
+
+    time.sleep(0.02)
 
