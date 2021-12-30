@@ -64,13 +64,11 @@ GLYPHS = [
      O, O, O),
 ]
 
-
 class RenderNum:
     brightness = 1
     digits = []
     dx = 0
     dy = 0
-    last = 0
 
     def __init__(self, display):
         self.display = display
@@ -83,9 +81,10 @@ class RenderNum:
 
     def set_brightness(self, value):
         self.brightness = value
-        self.render(self.last, True)
+        self.back = self.front.copy()
+        self.redraw(force=True)
 
-    def diffflush(self, force):
+    def diffflush(self, force=False):
         for i in range(self.buflen):
             y, x = divmod(i, self.display.width)
             x += self.dx
@@ -103,7 +102,7 @@ class RenderNum:
 
         self.front, self.back = self.back, self.front
 
-    def factor(self, number):
+    def factor(self, number, want_zeros = False):
         self.digits.clear()
 
         temp = number
@@ -112,7 +111,7 @@ class RenderNum:
             digit = temp % 10
             temp = int(temp / 10)
 
-            if digit == 0 and temp == 0:
+            if not want_zeros and digit == 0 and temp == 0:
                 continue
 
             self.digits.append(digit)
@@ -122,7 +121,7 @@ class RenderNum:
     def offset(self, dx, dy):
         self.dx = int(dx)
         self.dy = int(dy)
-        self.render(self.last)
+        self.redraw()
 
     def print(self):
         chunks = list(zip(*[iter(map(int, self.back))]*self.display.width))
@@ -131,11 +130,14 @@ class RenderNum:
             print(line)
         print("----")
 
-    def render(self, num, force = False):
-        self.last = num
+    def redraw(self, force=False):
+        self.back = self.front.copy()
+        self.diffflush(force)
+
+    def render(self, num, want_zeros=False, force=False):
         shift = self.display.width
 
-        for digit in self.factor(num):
+        for digit in self.factor(num, want_zeros):
             glyph = GLYPHS[digit]
 
             for i, bit in enumerate(glyph):
