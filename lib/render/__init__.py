@@ -8,46 +8,55 @@ GLYPHS = [
      O, L, O,
      O, L, O,
      O, O, O),
+
     (L, O, L,  # 1
      L, O, L,
      L, O, L,
      L, O, L,
      L, O, L),
+
     (O, O, O,  # 2
      L, L, O,
      O, O, O,
      O, L, L,
      O, O, O),
+
     (O, O, O,  # 3
      L, L, O,
      L, O, O,
      L, L, O,
      O, O, O),
+
     (O, L, O,  # 4
      O, L, O,
      O, O, O,
      L, L, O,
      L, L, O),
+
     (O, O, O,  # 5
      O, L, L,
      O, O, O,
      L, L, O,
      O, O, O),
+
     (O, O, O,  # 6
      O, L, L,
      O, O, O,
      O, L, O,
      O, O, O),
+
     (O, O, O,  # 7
      L, L, O,
-     L, O, L,
-     L, O, L,
-     L, O, L),
+     L, L, O,
+     L, L, O,
+     L, L, O),
+
     (O, O, O,  # 8
      O, L, O,
      O, O, O,
      O, L, O,
      O, O, O),
+
     (O, O, O,  # 9
      O, L, O,
      O, O, O,
